@@ -1,0 +1,20 @@
+import { analyzeBuffer, mappingAt } from './src/core/analyzer.ts';
+import { buildFixtureStream, encodeFrames, PID_UNKNOWN } from './src/core/fixture.ts';
+
+const fx = buildFixtureStream();
+const buf = encodeFrames(fx.packets, 188);
+const r = analyzeBuffer(buf);
+console.log('packets', r.packetCount, 'frame', r.frameSize, r.frameReason);
+console.log('sections', r.sections.length, r.sections.map(s => `${s.tableId}/v${s.version}/crc=${s.crcValid}/pkts=${s.carriedPackets.length}`));
+console.log('PAT gens', r.patGenerations.map(g => `v${g.version}${g.rolledBack?'RB':''}@${g.startPacket}`));
+console.log('PMT gens', r.pmtGenerations.map(g => `p${g.programNumber}/v${g.version}${g.rolledBack?'RB':''}@${g.startPacket} streams=${g.streams.length}`));
+console.log('events by kind');
+const counts: Record<string, number> = {};
+for (const e of r.events) counts[e.kind] = (counts[e.kind] ?? 0) + 1;
+console.log(counts);
+console.log('marks', fx.marks);
+const pcr = r.pcrTimeline.filter(p => p.pid === 0x101 && p.kind === 'pcr');
+console.log('pcr points', pcr.map(p => `${p.raw} -> ${p.unwrapped} d=${p.deltaFromPrev}`));
+const m = mappingAt(r, fx.marks.pmtV3BadCrcStart + 2);
+console.log('mapping at bad-crc end pmtVersion', m.programs.map(p => `${p.programNumber}:patv${p.patVersion}/pmtv${p.pmtVersion}`));
+console.log('unknown pid owner', m.pidOwnership['0x0103']);

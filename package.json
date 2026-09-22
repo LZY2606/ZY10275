@@ -1,0 +1,21 @@
+{
+  "name": "ts-review-bench",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "浏览器内 MPEG transport stream 审阅台：PSI 重组、PAT/PMT 代次、PES/PCR/CC/adaptation 时间线",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5975",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
+  }
+}
