@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MPEG-TS 审阅台</title>
+    <style>
+      :root { color-scheme: dark; }
+      body { margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: #101418; color: #d7dee6; }
+      header { padding: 10px 16px; display: flex; gap: 12px; align-items: center; border-bottom: 1px solid #2a323c; }
+      h1 { font-size: 16px; margin: 0; }
+      h2 { font-size: 13px; margin: 12px 16px 4px; color: #8fb8ff; }
+      button { background: #1f6feb; color: #fff; border: 0; border-radius: 4px; padding: 5px 12px; cursor: pointer; font: inherit; }
+      button:disabled { background: #333; }
+      #layout { display: grid; grid-template-columns: 1fr 340px; gap: 8px; padding: 0 16px 16px; }
+      canvas { width: 100%; background: #0b0e12; border: 1px solid #2a323c; border-radius: 4px; cursor: crosshair; }
+      #panel { font-size: 12px; }
+      table { border-collapse: collapse; width: 100%; font-size: 12px; }
+      td, th { border: 1px solid #2a323c; padding: 3px 6px; text-align: left; }
+      th { color: #8fb8ff; }
+      .ev-gap { color: #ff7b72; } .ev-duplicate { color: #d2a8ff; } .ev-discontinuity, .ev-cc_reset { color: #ffa657; }
+      .ev-crc_error, .ev-section_error { color: #ff5257; } .ev-pat_gen, .ev-pmt_gen { color: #3fb950; }
+      #events { max-height: 220px; overflow: auto; }
+      #status { color: #7d8590; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>MPEG-TS 审阅台</h1>
+      <button id="loadFixture">加载内置样例</button>
+      <label><input type="file" id="file" accept=".ts,.m2ts" style="display:none" /><button id="upload">打开 TS 文件</button></label>
+      <span id="status">未加载</span>
+    </header>
+    <h2>节目时钟图（PCR 展开后 27MHz 时钟 vs 原始 packet 序号，点击选取 packet）</h2>
+    <div id="layout">
+      <div>
+        <canvas id="clock" width="960" height="360"></canvas>
+        <h2>PID 时间线</h2>
+        <canvas id="timeline" width="960" height="180"></canvas>
+        <h2>事件</h2>
+        <div id="events"></div>
+      </div>
+      <div id="panel">
+        <h2>当刻 PID 映射</h2>
+        <div id="state"></div>
+        <h2>Packet 详情</h2>
+        <div id="packet"></div>
+      </div>
+    </div>
+    <script type="module" src="/src/ui/main.ts"></script>
+  </body>
+</html>
